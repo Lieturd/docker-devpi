@@ -9,8 +9,6 @@ ENV DEVPI_SERVER_VERSION=5.1.0 \
     VIRTUAL_ENV=/env \
     PATH=/env/bin:$PATH
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-
 RUN pip install virtualenv \
  && apk add --virtual build-deps \
         libffi-dev \
@@ -20,7 +18,6 @@ RUN pip install virtualenv \
     "devpi-client==${DEVPI_CLIENT_VERSION}" \
     "devpi-web==${DEVPI_WEB_VERSION}" \
     "devpi-server==${DEVPI_SERVER_VERSION}" \
-  && chmod +x /docker-entrypoint.sh \
   && apk del build-deps \
   && rm -rf "/var/cache/apk"
 
@@ -28,6 +25,9 @@ ENV HOME /data
 WORKDIR /data
 
 EXPOSE 3141
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["devpi"]
